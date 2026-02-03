@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from .models import Destination, Event
 from .serializers import DestinationSerializer, EventSerializer
 from .tasks import process_webhook_event  
@@ -73,3 +74,17 @@ class EventViewSet(viewsets.ModelViewSet):
             headers=headers
         )
         
+
+@api_view(['POST', 'GET'])
+def echo_webhook(request):
+    """
+    Echo endpoint for testing webhook deliveries.
+    Returns the received payload and headers.
+    """
+    return Response({
+        'message': 'Echo received!',
+        'method': request.method,
+        'payload': request.data,
+        'headers': dict(request.headers),
+    }, status=status.HTTP_200_OK)
+
